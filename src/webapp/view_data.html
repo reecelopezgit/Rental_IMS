@@ -88,6 +88,7 @@
     </div>
 
     <script>
+        import BASE_URL from "./config.js";
 		// Function to validate the token
 		async function validateToken() {
 		  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
@@ -100,7 +101,7 @@
 
 		  try {
 		    // Call the API
-		    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+		    const response = await fetch('http://rental-ims.onrender.com/api/users/validate-token', {
 		      method: "GET",
 		      headers: {
 		        "Authorization": token, // Send the token in the Authorization header
@@ -163,7 +164,7 @@
 <script>
     // Load Service Requests with Edit and Delete buttons
     function loadServiceRequests() {
-        fetch('http://localhost:8080/api/services')
+        fetch('http://rental-ims.onrender.com/api/services')
             .then(response => response.json())
             .then(serviceRequests => {
                 const tableBody = document.getElementById("service-requests-table").querySelector("tbody");
@@ -197,7 +198,7 @@
 
     // Load Properties with Edit and Delete buttons
     function loadProperties() {
-        fetch('http://localhost:8080/api/properties')
+        fetch('http://rental-ims.onrender.com/api/properties')
             .then(response => response.json())
             .then(properties => {
                 const tableBody = document.getElementById("properties-table").querySelector("tbody");
@@ -222,7 +223,7 @@
 
     // Load Items with Edit and Delete buttons
     function loadItems() {
-        fetch('http://localhost:8080/api/items')
+        fetch('http://rental-ims.onrender.com/api/items')
             .then(response => response.json())
             .then(items => {
                 const tableBody = document.getElementById("items-table").querySelector("tbody");
@@ -251,7 +252,7 @@
     // Placeholder functions for edit and delete actions
     function editServiceRequest(id) {
         // Fetch the service request data
-        fetch(`http://localhost:8080/api/services/${id}`)
+        fetch(`http://rental-ims.onrender.com/api/services/${id}`)
             .then(response => response.json())
             .then(data => {
                 // Store the ID in the URL for the update form
@@ -261,7 +262,7 @@
     }
 
     function editProperty(id) {
-        fetch(`http://localhost:8080/api/properties/${id}`)
+        fetch(`http://rental-ims.onrender.com/api/properties/${id}`)
             .then(response => response.json())
             .then(data => {
                 window.location.href = `update_property.html?id=${id}`;
@@ -270,7 +271,7 @@
     }
 
     function editItem(id) {
-        fetch(`http://localhost:8080/api/items/${id}`)
+        fetch(`http://rental-ims.onrender.com/api/items/${id}`)
             .then(response => response.json())
             .then(data => {
                 window.location.href = `update_item.html?id=${id}`;
@@ -287,7 +288,7 @@
 
     function deleteServiceRequest(id) {
         if (confirm('Are you sure you want to delete this service request?')) {
-            fetch(`http://localhost:8080/api/services/delete/${id}`, {
+            fetch(`http://rental-ims.onrender.com/api/services/delete/${id}`, {
                 method: 'DELETE'
             })
             .then(response => {
@@ -306,7 +307,7 @@
 
     function deleteItem(id) {
         if (confirm('Are you sure you want to delete this item? This will also remove it from any associated service requests.')) {
-            fetch(`http://localhost:8080/api/items/delete/${id}`, {
+            fetch(`http://rental-ims.onrender.com/api/items/delete/${id}`, {
                 method: 'DELETE'
             })
             .then(response => {
@@ -326,7 +327,7 @@
 
     function deleteProperty(id) {
         if (confirm('WARNING: Deleting this property will also delete all associated items and service requests. Are you sure you want to proceed?')) {
-            fetch(`http://localhost:8080/api/properties/delete/${id}`, {
+            fetch(`http://rental-ims.onrender.com/api/properties/delete/${id}`, {
                 method: 'DELETE'
             })
             .then(response => {
@@ -391,7 +392,7 @@
         function logout() {
             console.log("Executing logout...");
             const token = localStorage.getItem("authToken");
-            fetch('http://localhost:8080/api/users/logout', {
+            fetch('http://rental-ims.onrender.com/api/users/logout', {
                 method: 'POST',
                 headers: { 'Authorization': token }
             })

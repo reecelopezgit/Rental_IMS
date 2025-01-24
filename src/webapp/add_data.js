@@ -1,7 +1,9 @@
+import BASE_URL from "./config.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     // Fetch Properties for Dropdown
     const loadProperties = () => {
-        fetch('http://localhost:8080/api/properties')
+        fetch('http://rental-ims.onrender.com/api/properties')
             .then(response => response.json())
             .then(properties => {
                 const propertySelect = document.getElementById('item-property');
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch Items for Dropdown
     const loadItemsService = () => {
-        fetch('http://localhost:8080/api/items')
+        fetch('http://rental-ims.onrender.com/api/items')
             .then(response => response.json())
             .then(items => {
                 const itemSelect = document.getElementById('select-item');
@@ -61,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 address: document.getElementById('property-address').value,
                 type: document.getElementById('property-type').value
             };
-            fetch('http://localhost:8080/api/properties/new', {
+            fetch('http://rental-ims.onrender.com/api/properties/new', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(propertyData)
@@ -92,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 category: document.getElementById('item-category').value,
                 propertyId: parseInt(document.getElementById('item-property').value)
             };
-            fetch('http://localhost:8080/api/items/new', {
+            fetch('http://rental-ims.onrender.com/api/items/new', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(itemData)
@@ -127,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 requestDate: document.getElementById('request-date').value || null,
                 scheduledDate: document.getElementById('scheduled-date').value || null
             };
-            fetch('http://localhost:8080/api/services/new', {
+            fetch('http://rental-ims.onrender.com/api/services/new', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(serviceData)

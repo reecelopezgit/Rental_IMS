@@ -66,6 +66,7 @@
     </div>
 
     <script>
+        import BASE_URL from "./config.js";
 		// Function to validate the token
 		async function validateToken() {
 		  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
@@ -78,7 +79,7 @@
 
 		  try {
 		    // Call the API
-		    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+		    const response = await fetch('http://rental-ims.onrender.com/api/users/validate-token', {
 		      method: "GET",
 		      headers: {
 		        "Authorization": token, // Send the token in the Authorization header
@@ -108,7 +109,7 @@
         const itemId = urlParams.get('id');
 
         // Load properties for dropdown
-        fetch('http://localhost:8080/api/properties')
+        fetch('http://rental-ims.onrender.com/api/properties')
             .then(response => response.json())
             .then(properties => {
                 const propertySelect = document.getElementById('property-id');
@@ -122,7 +123,7 @@
             .catch(error => console.error('Error loading properties:', error));
 
         // Load item data
-        fetch(`http://localhost:8080/api/items/${itemId}`)
+        fetch(`http://rental-ims.onrender.com/api/items/${itemId}`)
             .then(response => response.json())
             .then(item => {
                 console.log('Received item:', item);
@@ -160,7 +161,7 @@
 
                 console.log('Sending update:', itemDTO);
 
-                const response = await fetch(`http://localhost:8080/api/items/update/${itemId}`, {
+                const response = await fetch(`http://rental-ims.onrender.com/api/items/update/${itemId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

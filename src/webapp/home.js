@@ -1,4 +1,4 @@
-
+import BASE_URL from "./config.js";
 
 
 
@@ -60,7 +60,7 @@ async function validateToken() {
 
   try {
     // Call the API
-    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+    const response = await fetch('http://rental-ims.onrender.com/api/users/validate-token', {
       method: "GET",
       headers: {
         "Authorization": token, // Send the token in the Authorization header
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const pendingRequestsSpan = document.getElementById('pending-requests');
 
     // Fetch the summary from the backend API
-    fetch('http://localhost:8080/home/summary') // Adjust URL to match your backend endpoint
+    fetch('http://rental-ims.onrender.com/home/summary') // Adjust URL to match your backend endpoint
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch summary data');

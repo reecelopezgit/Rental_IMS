@@ -52,6 +52,7 @@
     </div>
 
     <script>
+        import BASE_URL from "./config.js";
 		// Function to validate the token
 		async function validateToken() {
 		  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
@@ -64,7 +65,7 @@
 
 		  try {
 		    // Call the API
-		    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+		    const response = await fetch('http://rental-ims.onrender.com/api/users/validate-token', {
 		      method: "GET",
 		      headers: {
 		        "Authorization": token, // Send the token in the Authorization header
@@ -94,7 +95,7 @@
         const propertyId = urlParams.get('id');
 
         // Load property data
-        fetch(`http://localhost:8080/api/properties/${propertyId}`)
+        fetch(`http://rental-ims.onrender.com/api/properties/${propertyId}`)
             .then(response => response.json())
             .then(property => {
                 document.getElementById('property-name').value = property.property_name;
@@ -113,7 +114,7 @@
                 type: document.getElementById('property-type').value
             };
 
-            fetch(`http://localhost:8080/api/properties/update/${propertyId}`, {
+            fetch(`http://rental-ims.onrender.com/api/properties/update/${propertyId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

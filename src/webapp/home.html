@@ -21,6 +21,7 @@
         </div>
     </div>
     <script>
+        import BASE_URL from "./config.js";
         // Fetch and insert navigation panel
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -66,7 +67,7 @@ fetch("navigation.html")
 function logout() {
     console.log("Executing logout...");
     const token = localStorage.getItem("authToken");
-    fetch('http://localhost:8080/api/users/logout', {
+    fetch('http://rental-ims.onrender.com/api/users/logout', {
         method: 'POST',
         headers: { 'Authorization': token }
     })

@@ -109,6 +109,7 @@
 </div>
 
 <script>
+    import BASE_URL from "./config.js";
 	// Function to validate the token
 	async function validateToken() {
 	  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
@@ -121,7 +122,7 @@
 
 	  try {
 	    // Call the API
-	    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+	    const response = await fetch('http://rental-ims.onrender.com/api/users/validate-token', {
 	      method: "GET",
 	      headers: {
 	        "Authorization": token, // Send the token in the Authorization header
@@ -155,7 +156,7 @@
         try {
             // Load properties
             console.log('Loading properties...');
-            const propertiesResponse = await fetch('http://localhost:8080/api/properties');
+            const propertiesResponse = await fetch('http://rental-ims.onrender.com/api/properties');
             if (!propertiesResponse.ok) {
                 throw new Error('Failed to load properties');
             }
@@ -173,7 +174,7 @@
 
             // Load items
             console.log('Loading items...');
-            const itemsResponse = await fetch('http://localhost:8080/api/items');
+            const itemsResponse = await fetch('http://rental-ims.onrender.com/api/items');
             if (!itemsResponse.ok) {
                 throw new Error('Failed to load items');
             }
@@ -190,7 +191,7 @@
             });
 
             // Load service request data
-            const serviceResponse = await fetch(`http://localhost:8080/api/services/${serviceRequestId}`);
+            const serviceResponse = await fetch(`http://rental-ims.onrender.com/api/services/${serviceRequestId}`);
             if (!serviceResponse.ok) {
                 throw new Error('Failed to load service request');
             }
@@ -236,7 +237,7 @@
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/api/services/update/${serviceRequestId}`, {
+            const response = await fetch(`http://rental-ims.onrender.com/api/services/update/${serviceRequestId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

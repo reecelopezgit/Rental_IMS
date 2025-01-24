@@ -71,6 +71,7 @@
         </section>
     </div>
 	<script>
+		import BASE_URL from "./config.js";
 		// Function to validate the token
 		async function validateToken() {
 		  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
@@ -83,7 +84,7 @@
 
 		  try {
 		    // Call the API
-		    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+		    const response = await fetch('http://rental-ims.onrender.com/api/users/validate-token', {
 		      method: "GET",
 		      headers: {
 		        "Authorization": token, // Send the token in the Authorization header
@@ -153,7 +154,7 @@ fetch("navigation.html")
 function logout() {
 	console.log("Executing logout...");
 	const token = localStorage.getItem("authToken");
-	fetch('http://localhost:8080/api/users/logout', {
+	fetch('http://rental-ims.onrender.com/api/users/logout', {
 		method: 'POST',
 		headers: { 'Authorization': token }
 	})
