@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add New Data</title>
+  <!-- Link to your CSS file -->
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<style>
+  /* Center the entire container vertically & horizontally (optional) */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  font-family: Roboto, serif; /* or your preferred font */
+  background-color: #f0f0f0;      /* slight gray background */
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;         /* stretch to full viewport height */
+}
+
+/* Heading Style */
+.add-data-container h1 {
+  color: rgb(18, 95, 225); /* tie in your brand color */
+  margin-bottom: 30px;     /* spacing below heading */
+}
+
+/* Wrapper for the buttons */
+/* Wrapper for the buttons, stacked vertically */
+.buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* more space between buttons */
+}
+
+/* ENLARGE THE BUTTONS */
+.buttons-wrapper button {
+  background-color: rgb(18, 95, 225);  /* primary blue color */
+  color: #ffffff;
+  font-size: 20px;          /* larger text */
+  padding: 16px 32px;       /* bigger padding around text/icon */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* left-align icon & text */
+  width: 100%;                 /* full width, if desired */
+  gap: 12px;                   /* bigger gap between icon & text */
+}
+/* Hover effect */
+.buttons-wrapper button:hover {
+  background-color: rgb(15, 80, 190); /* slightly darker shade on hover */
+}
+.buttons-wrapper i {
+  font-size: 24px; /* bigger icons */
+}
+
+</style>
+<body>
+  <div id="navigation-container"></div>
+  <div class="main-content">
+    <h1>Add Data</h1>
+    <div class="buttons-wrapper">
+      <!-- Each button navigates to a different page -->
+      <button onclick="window.location.href='add_item.html'">
+        <i class="fas fa-box fa-fw"></i> Add Item
+      </button>
+      
+      <button onclick="window.location.href='add_property.html'">
+        <i class="fas fa-building fa-fw"></i> Add Property
+      </button>
+
+      <button onclick="window.location.href='add_servicerequest.html'">
+        <i class="fas fa-wrench fa-fw"></i> Add Service Request
+      </button>
+    </div>
+  </div>
+  <script>
+	// Function to validate the token
+	async function validateToken() {
+	  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
+
+	  if (!token) {
+	    alert("No token found. Redirecting to login...");
+	    window.location.href = "index.html"; // Redirect to login if no token
+	    return;
+	  }
+
+	  try {
+	    // Call the API
+	    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+	      method: "GET",
+	      headers: {
+	        "Authorization": token, // Send the token in the Authorization header
+	      },
+	    });
+
+	    if (response.status === 200) {
+	      console.log("Token is valid. Proceeding...");
+	      // Proceed with loading the page
+	    } else {
+	      const errorMessage = await response.text();
+	      alert(`Error: ${errorMessage}`);
+	      window.location.href = "index.html"; // Redirect to login if token is invalid
+	    }
+	  } catch (error) {
+	    console.error("An error occurred:", error);
+	    alert("Unable to validate token. Please try again later.");
+	    window.location.href = "index.html"; // Redirect on API call failure
+	  }
+	}
+
+	// Call the function on page load
+	document.addEventListener("DOMContentLoaded", validateToken);
+
+    // Fetch and insert navigation panel
+    document.addEventListener('DOMContentLoaded', () => {
+
+fetch("navigation.html")
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("navigation-container").innerHTML = data;
+
+        // Attach event listeners for dynamically loaded navigation
+        const logoutButton = document.getElementById("logout-button");
+        if (logoutButton) {
+            logoutButton.addEventListener("click", (event) => {
+                event.preventDefault();
+                console.log("Logout button clicked.");
+                logout();
+            });
+        } else {
+            console.error("Logout button not found.");
+        }
+
+        const navToggle = document.querySelector(".nav-toggle");
+        const navigationPanel = document.querySelector(".navigation-panel");
+        const mainContent = document.querySelector(".main-content");
+
+        if (navToggle && navigationPanel) {
+            navToggle.addEventListener("click", () => {
+                navigationPanel.classList.toggle("collapsed");
+                if (mainContent) mainContent.classList.toggle("collapsed");
+            });
+        }
+
+        // Highlight active menu link
+        const menuLinks = document.querySelectorAll('.main-menu a');
+        menuLinks.forEach(link => {
+            if (link.href === window.location.href) {
+                link.classList.add('active');
+            }
+        });
+    })
+    .catch(error => console.error("Error loading navigation:", error));
+
+// Logout function
+function logout() {
+    console.log("Executing logout...");
+    const token = localStorage.getItem("authToken");
+    fetch('http://localhost:8080/api/users/logout', {
+        method: 'POST',
+        headers: { 'Authorization': token }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Logout failed');
+        }
+        localStorage.removeItem("authToken"); // Clear token
+        window.location.href = "index.html"; // Redirect to login page
+        history.replaceState(null, null, "index.html");
+    })
+    .catch(error => {
+        console.error("Error during logout:", error);
+        alert("Failed to logout");
+    });
+}})
+</script>
+</body>
+
+</html>

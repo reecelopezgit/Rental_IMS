@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Property</title>
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Update Property</h2>
+        <form id="update-property-form">
+            <div class="form-group">
+                <label for="property-name">Property Name</label>
+                <input type="text" id="property-name" required>
+            </div>
+            <div class="form-group">
+                <label for="property-address">Address</label>
+                <input type="text" id="property-address" required>
+            </div>
+            <div class="form-group">
+                <label for="property-type">Type</label>
+                <input type="text" id="property-type" required>
+            </div>
+            <button type="submit">Update Property</button>
+        </form>
+    </div>
+
+    <script>
+		// Function to validate the token
+		async function validateToken() {
+		  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
+
+		  if (!token) {
+		    alert("No token found. Redirecting to login...");
+		    window.location.href = "index.html"; // Redirect to login if no token
+		    return;
+		  }
+
+		  try {
+		    // Call the API
+		    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+		      method: "GET",
+		      headers: {
+		        "Authorization": token, // Send the token in the Authorization header
+		      },
+		    });
+
+		    if (response.status === 200) {
+		      console.log("Token is valid. Proceeding...");
+		      // Proceed with loading the page
+		    } else {
+		      const errorMessage = await response.text();
+		      alert(`Error: ${errorMessage}`);
+		      window.location.href = "index.html"; // Redirect to login if token is invalid
+		    }
+		  } catch (error) {
+		    console.error("An error occurred:", error);
+		    alert("Unable to validate token. Please try again later.");
+		    window.location.href = "index.html"; // Redirect on API call failure
+		  }
+		}
+
+		// Call the function on page load
+		document.addEventListener("DOMContentLoaded", validateToken);
+
+        // Get property ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const propertyId = urlParams.get('id');
+
+        // Load property data
+        fetch(`http://localhost:8080/api/properties/${propertyId}`)
+            .then(response => response.json())
+            .then(property => {
+                document.getElementById('property-name').value = property.property_name;
+                document.getElementById('property-address').value = property.address;
+                document.getElementById('property-type').value = property.type;
+            })
+            .catch(error => console.error('Error:', error));
+
+        // Handle form submission
+        document.getElementById('update-property-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const updatedProperty = {
+                property_name: document.getElementById('property-name').value,
+                address: document.getElementById('property-address').value,
+                type: document.getElementById('property-type').value
+            };
+
+            fetch(`http://localhost:8080/api/properties/update/${propertyId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedProperty)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Property updated successfully!');
+                    window.location.href = 'view_data.html';
+                } else {
+                    throw new Error('Failed to update property');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update property');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item</title>	
+	<link rel="stylesheet" href="add_data_styles.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="navigation-container"></div>
+	
+	<div class="main-content">
+		<!-- Page-specific content goes here -->
+
+        <h1>Add Item</h1>
+
+
+
+        <!-- Form to Add Item -->
+        <section>
+            <h2>Add Item</h2>
+            <form id="item-form">
+                <input type="text" id="item-name" placeholder="Item Name" required>
+                <input type="text" id="item-description" placeholder="Description" required>
+                <input type="number" id="item-price" placeholder="Price" required>
+                <input type="number" id="item-quantity" placeholder="Quantity" required>
+                <input type="text" id="item-category" placeholder="Category" required>
+				<select id="item-property" required>
+				    <option value="">Select Property</option>
+				    <!-- Options will be populated by JavaScript -->
+				</select>
+				<button type="submit">Add Item</button>
+            </form>
+        </section>
+
+        
+    </div>
+    <script>
+		// Function to validate the token
+		async function validateToken() {
+		  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
+
+		  if (!token) {
+		    alert("No token found. Redirecting to login...");
+		    window.location.href = "index.html"; // Redirect to login if no token
+		    return;
+		  }
+
+		  try {
+		    // Call the API
+		    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+		      method: "GET",
+		      headers: {
+		        "Authorization": token, // Send the token in the Authorization header
+		      },
+		    });
+
+		    if (response.status === 200) {
+		      console.log("Token is valid. Proceeding...");
+		      // Proceed with loading the page
+		    } else {
+		      const errorMessage = await response.text();
+		      alert(`Error: ${errorMessage}`);
+		      window.location.href = "index.html"; // Redirect to login if token is invalid
+		    }
+		  } catch (error) {
+		    console.error("An error occurred:", error);
+		    alert("Unable to validate token. Please try again later.");
+		    window.location.href = "index.html"; // Redirect on API call failure
+		  }
+		}
+
+		// Call the function on page load
+		document.addEventListener("DOMContentLoaded", validateToken);
+
+        // Fetch and insert navigation panel
+        document.addEventListener('DOMContentLoaded', () => {
+
+fetch("navigation.html")
+	.then(response => response.text())
+	.then(data => {
+		document.getElementById("navigation-container").innerHTML = data;
+
+		// Attach event listeners for dynamically loaded navigation
+		const logoutButton = document.getElementById("logout-button");
+		if (logoutButton) {
+			logoutButton.addEventListener("click", (event) => {
+				event.preventDefault();
+				console.log("Logout button clicked.");
+				logout();
+			});
+		} else {
+			console.error("Logout button not found.");
+		}
+
+		const navToggle = document.querySelector(".nav-toggle");
+		const navigationPanel = document.querySelector(".navigation-panel");
+		const mainContent = document.querySelector(".main-content");
+
+		if (navToggle && navigationPanel) {
+			navToggle.addEventListener("click", () => {
+				navigationPanel.classList.toggle("collapsed");
+				if (mainContent) mainContent.classList.toggle("collapsed");
+			});
+		}
+
+		// Highlight active menu link
+		const menuLinks = document.querySelectorAll('.main-menu a');
+		menuLinks.forEach(link => {
+			if (link.href === window.location.href) {
+				link.classList.add('active');
+			}
+		});
+	})
+	.catch(error => console.error("Error loading navigation:", error));
+
+// Logout function
+function logout() {
+	console.log("Executing logout...");
+	const token = localStorage.getItem("authToken");
+	fetch('http://localhost:8080/api/users/logout', {
+		method: 'POST',
+		headers: { 'Authorization': token }
+	})
+	.then(response => {
+		if (!response.ok) {
+			throw new Error('Logout failed');
+		}
+		localStorage.removeItem("authToken"); // Clear token
+		window.location.href = "index.html"; // Redirect to login page
+		history.replaceState(null, null, "index.html");
+	})
+	.catch(error => {
+		console.error("Error during logout:", error);
+		alert("Failed to logout");
+	});
+}})
+
+    </script>
+    <script src="add_data.js">
+
+
+	</script>
+</body>
+</html>

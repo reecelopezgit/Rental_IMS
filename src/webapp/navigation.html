@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Font Awesome -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <!-- Your CSS file -->
+  <link rel="stylesheet" href="navigation.css" />
+  <title>Navigation Panel</title>
+</head>
+<body>
+  <div class="navigation-panel">
+    <div class="logo-section">
+      <img src="logo.jpg" alt="Company Logo" class="logo" />
+      <h1 class="company-name">R Rentals</h1>
+      <div class="nav-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+
+    <ul class="main-menu">
+      <li class="menu-header">MAIN MENU</li>
+      <li>
+        <a href="home.html">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="view_data.html">
+          <i class="fas fa-table"></i>
+          <span>Database</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="add_new.html">
+          <i class="fas fa-plus"></i>
+          <span>Add New</span>
+          </a>
+      </li>
+      <li class="sub-item">
+        <a href="add_item.html">
+          <span>○ Item</span>
+        </a>
+      </li>
+      <li class="sub-item">
+        <a href="add_property.html">
+          <span>○ Property</span>
+        </a>
+      </li>
+      <li class="sub-item">
+        <a href="add_servicerequest.html">
+          <span>○ Service Request</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="help.html">
+          <i class="fas fa-question-circle"></i>
+          <span>Help</span>
+        </a>
+      </li>
+      <li>
+        <button id="logout-button">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+	
+    document.addEventListener("DOMContentLoaded", () => {
+        
+      // 1. Toggle the entire navigation panel (collapse/expand).
+      const navToggle = document.querySelector(".nav-toggle");
+      const navigationPanel = document.querySelector(".navigation-panel");
+
+      if (navToggle && navigationPanel) {
+        navToggle.addEventListener("click", () => {
+          navigationPanel.classList.toggle("collapsed");
+        });
+      }
+    
+
+     const logoutButton = document.getElementById('logout-button');
+    console.log("Looking for logout button...");
+
+    if (logoutButton) {
+        console.log("Logout button found. Adding event listener...");
+        logoutButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            console.log("Logout button clicked. Calling logout function...");
+            logout();
+        });
+    } else {
+        console.error("Logout button not found in the DOM.");
+    }
+});
+
+function logout() {
+    console.log("Executing logout...");
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        alert("You are already logged out.");
+        return;
+    }
+
+    fetch('http://localhost:8080/api/users/logout', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Logout failed');
+            }
+            console.log("Logout successful. Clearing token and redirecting...");
+            localStorage.removeItem("authToken");
+            window.location.href = "index.html";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Failed to logout. Please try again.");
+        });
+}
+  </script>
+</body>
+</html>
