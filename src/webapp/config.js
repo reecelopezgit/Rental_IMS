@@ -1,2 +1,2 @@
-const BASE_URL = "https://rental-ims.onrender.com";
+const BASE_URL = "httpss://rental-ims.onrender.com";
 export default BASE_URL;

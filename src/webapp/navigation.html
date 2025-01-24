@@ -114,7 +114,7 @@ function logout() {
         return;
     }
 
-    fetch('http://rental-ims.onrender.com/api/users/logout', {
+    fetch('https://rental-ims.onrender.com/api/users/logout', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
     })
