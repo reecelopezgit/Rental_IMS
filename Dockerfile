@@ -1,16 +1,18 @@
-# Step 1: Use OpenJDK 8 as the base image
+# Use OpenJDK 8 as the base image
 FROM openjdk:8-jdk-slim
 
-# Step 2: Set the working directory inside the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Step 3: Copy project files into the container
+# Copy source code, dependencies, and configuration into the container
 COPY src/ /app/src/
-COPY config/ /app/config/
 COPY libs/ /app/libs/
+COPY config/ /app/config/
 
-# Step 4: Compile the Java code
-RUN javac -cp "libs/*" -d out $(find src -name "*.java")
+# Compile the Java code in two steps for better error visibility
+RUN mkdir out
+RUN find src -name "*.java" > sources.txt && \
+    javac -cp "libs/*" -d out @sources.txt
 
-# Step 5: Run the Spring Boot application
+# Run the compiled Spring Boot application
 CMD ["java", "-cp", "libs/*:out", "app.SpringBootApp"]
