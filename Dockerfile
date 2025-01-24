@@ -1,5 +1,5 @@
 # Step 1: Use a lightweight OpenJDK image
-FROM openjdk:17-jdk-slim
+FROM openjdk:8-jdk-slim
 
 # Step 2: Set the working directory inside the container
 WORKDIR /app
