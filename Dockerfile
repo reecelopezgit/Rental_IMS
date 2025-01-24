@@ -12,4 +12,4 @@ COPY config/ /app/config/
 COPY libs/ /app/libs/
 
 # Compile and run the application, setting the classpath to include all JAR files in the libs folder
-CMD ["java", "-cp", "libs/*:src", "com.app.SpringBootApp"]
+CMD ["java", "-cp", "libs/*:src", "com.app.SpringBootApp.java"]
