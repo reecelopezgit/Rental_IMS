@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Item</title>
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Update Item</h2>
+        <form id="update-item-form">
+            <div class="form-group">
+                <label for="item-name">Item Name</label>
+                <input type="text" id="item-name" required>
+            </div>
+            <div class="form-group">
+                <label for="item-description">Description</label>
+                <input type="text" id="item-description" required>
+            </div>
+            <div class="form-group">
+                <label for="item-price">Price</label>
+                <input type="number" id="item-price" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="item-quantity">Quantity</label>
+                <input type="number" id="item-quantity" required>
+            </div>
+            <div class="form-group">
+                <label for="item-category">Category</label>
+                <input type="text" id="item-category" required>
+            </div>
+            <div class="form-group">
+                <label for="property-id">Property</label>
+                <select id="property-id" required>
+                    <option value="">Select Property</option>
+                </select>
+            </div>
+            <button type="submit">Update Item</button>
+        </form>
+    </div>
+
+    <script>
+		// Function to validate the token
+		async function validateToken() {
+		  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
+
+		  if (!token) {
+		    alert("No token found. Redirecting to login...");
+		    window.location.href = "index.html"; // Redirect to login if no token
+		    return;
+		  }
+
+		  try {
+		    // Call the API
+		    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+		      method: "GET",
+		      headers: {
+		        "Authorization": token, // Send the token in the Authorization header
+		      },
+		    });
+
+		    if (response.status === 200) {
+		      console.log("Token is valid. Proceeding...");
+		      // Proceed with loading the page
+		    } else {
+		      const errorMessage = await response.text();
+		      alert(`Error: ${errorMessage}`);
+		      window.location.href = "index.html"; // Redirect to login if token is invalid
+		    }
+		  } catch (error) {
+		    console.error("An error occurred:", error);
+		    alert("Unable to validate token. Please try again later.");
+		    window.location.href = "index.html"; // Redirect on API call failure
+		  }
+		}
+
+		// Call the function on page load
+		document.addEventListener("DOMContentLoaded", validateToken);
+
+        // Get item ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemId = urlParams.get('id');
+
+        // Load properties for dropdown
+        fetch('http://localhost:8080/api/properties')
+            .then(response => response.json())
+            .then(properties => {
+                const propertySelect = document.getElementById('property-id');
+                properties.forEach(property => {
+                    const option = document.createElement('option');
+                    option.value = property.id;
+                    option.textContent = property.property_Name;
+                    propertySelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error loading properties:', error));
+
+        // Load item data
+        fetch(`http://localhost:8080/api/items/${itemId}`)
+            .then(response => response.json())
+            .then(item => {
+                console.log('Received item:', item);
+                document.getElementById('item-name').value = item.name;
+                document.getElementById('item-description').value = item.item_description;
+                document.getElementById('item-price').value = item.price;
+                document.getElementById('item-quantity').value = item.quantity;
+                document.getElementById('item-category').value = item.category;
+                document.getElementById('property-id').value = item.propertyId ? item.propertyId.id : '';
+            })
+            .catch(error => console.error('Error:', error));
+
+        // Handle form submission
+        document.getElementById('update-item-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const propertyId = document.getElementById('property-id').value;
+            if (!propertyId) {
+                alert('Please select a property');
+                return;
+            }
+
+            try {
+                const itemDTO = {
+                    id: parseInt(itemId),
+                    name: document.getElementById('item-name').value,
+                    item_description: document.getElementById('item-description').value,
+                    price: parseFloat(document.getElementById('item-price').value),
+                    quantity: parseInt(document.getElementById('item-quantity').value),
+                    category: document.getElementById('item-category').value,
+                    propertyId: {  // Just send the property ID
+                        id: parseInt(propertyId)
+                    }
+                };
+
+                console.log('Sending update:', itemDTO);
+
+                const response = await fetch(`http://localhost:8080/api/items/update/${itemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(itemDTO)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText);
+                }
+
+                alert('Item updated successfully!');
+                window.location.href = 'view_data.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to update item: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

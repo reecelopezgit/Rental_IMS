@@ -1,0 +1,319 @@
+
+
+
+/* Navigation Panel */
+
+.navigation-panel {
+    width: 275px;
+    min-width: 250px;
+    flex-shrink: 0;
+    background-color: rgb(18, 95, 225);
+    color: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease; /* Add smooth transition */
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.4); /* Shadow on the right */
+
+}
+
+/* Collapsed state */
+.navigation-panel.collapsed {
+    width: 100px;
+    min-width: 100px;
+    box-shadow: none
+
+}
+
+/* Logo Section */
+.logo-section {
+    display: flex; /* Flexbox for alignment */
+    padding: 10px 20px;
+    align-items: center;
+
+    width: 100%; /* Ensure it spans the full panel width */
+    
+    margin-left: 50px;
+    gap: 20px; /* Add space between the logo and text */
+    transition: all 0.3s ease;
+}
+
+.logo {
+    margin-left: 10px;
+    width: 35px; /* Make the logo smaller */
+    height: 35px; /* Maintain square dimensions */
+    border-radius: 50%; /* Optional: Rounded logo */
+}
+
+.company-name {
+    font-size: 20px; /* Adjust font size for balance */
+    font-weight: bold;
+    color: #ecf0f1;
+    text-align: left; /* Align text to the left */
+}
+
+
+
+
+.main-menu {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+}
+
+.menu-link.static-item i.fa-plus {
+    font-size: 22px;
+  }
+.menu-link {
+    text-decoration: none;
+    color: #ecf0f1;
+    font-size: 16px;
+    padding: 10px 40px;  /* Match header padding */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s ease; /* ensure no underline, etc. */
+  }
+  
+  /* Remove hover highlight for .static-item */
+  .menu-link.static-item:hover {
+    background-color: transparent; /* or none */
+    cursor: default; /* or not-allowed if you want to show it’s unclickable */
+  }
+  .sub-item span {
+    padding-left: 40px; /* Adjust as needed (20px, 40px, 60px, etc.) */
+  }
+
+.main-menu .menu-header {
+    color: #ecf0f1;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 40px;  /* Increased padding */
+    
+    text-align: left;
+    width: calc(100% - 80px);  /* Account for padding */
+    opacity: 1;  /* Slightly dimmed text */
+    letter-spacing: 1px;  /* Better letter spacing */
+}
+
+.main-menu li {
+    margin: 10px 0;
+    position: relative; /* Anchor for dropdown */
+
+}
+
+
+.main-menu a {
+    text-decoration: none;
+    color: #ecf0f1;
+    font-size: 16px;
+    padding: 10px 40px;  /* Match header padding */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s ease;
+}
+
+
+.main-menu a i {
+    font-size: 18px;
+    width: 20px;  /* Fixed width for icons */
+}
+
+.main-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.additional-functions ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: auto; /* Push additional functions to the bottom */
+    width: 100%;
+}
+
+.additional-functions li {
+    margin: 10px 0;
+}
+
+.additional-functions a {
+    text-decoration: none;
+    color: #ecf0f1;
+    font-size: 16px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.additional-functions a i {
+    font-size: 18px;
+}
+
+.additional-functions a:hover {
+    background-color: #34495e;
+}
+
+
+/* Navigation Toggle Button */
+.nav-toggle {
+background: none;
+border: none;
+cursor: pointer;
+color: #ecf0f1;
+font-size: 20px;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-left: 5px;
+transition: transform 0.3s ease;
+}
+
+.nav-toggle:hover {
+color: #bdc3c7;
+}
+
+/* Adjustments for Collapsed State */
+.navigation-panel.collapsed .logo {
+opacity: 0; /* Hide logo */
+pointer-events: none; /* Prevent interaction */
+}
+
+
+
+.navigation-panel.collapsed .nav-toggle i {
+font-size: 30px; /* Enlarge the toggle for better visibility */
+position: absolute; /* Position it in the center of the collapsed panel */
+left: 54%; /* Center horizontally */
+top: 6%;
+transform: translateX(-50%); /* Adjust for centering */
+}
+
+
+
+
+.nav-toggle i {
+    color: white;
+    font-size: 22px;
+    
+    transition: font-size 0.3s ease;
+}
+
+/* Adjust logo section for collapsed state */
+.collapsed .logo-section {
+    margin-left: 0;
+    justify-content: center;
+}
+
+.collapsed .company-name {
+    display: none;
+}
+
+/* Adjust menu items for collapsed state */
+.collapsed .main-menu .menu-header {
+    display: none;
+}
+
+.collapsed .main-menu a {
+    padding: 10px;
+    justify-content: center;
+}
+
+.collapsed .main-menu a span {
+    display: none;
+}
+
+.collapsed .main-menu .menu-link.static-item span{
+    display: none;
+}
+
+.collapsed.main-menu.menu-link.static-item{
+    font-size: 24px;
+    margin: 0;
+}
+.navigation-panel.collapsed .sub-item {
+    display: none;
+  }
+
+.collapsed .main-menu a i {
+    font-size: 24px;
+    margin: 0;
+}
+
+
+
+
+
+/* Highlight the selected panel */
+.main-menu a.active {
+    background-color: white; /* Highlight background */
+    color: rgb(18, 95, 225); /* Text color to match main panel */
+
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.main-menu a.active i {
+    color: rgb(18, 95, 225); /* Change icon color */
+}
+
+
+#logout-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align content to the left */
+    background-color: rgb(18, 95, 225); /* Match navigation panel color */
+    color: #fff; /* White text */
+    font-size: 16px;
+    border: none;
+    font: Roboto;
+margin-left: 2px;
+    padding: 10px 40px;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transitions */
+    width: calc(100% - 2px); /* Account for padding on both sides */
+    box-sizing: border-box; /* Ensure padding is included in width */
+    text-align: left;
+}
+
+
+#logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#logout-button i {
+    margin-right: 10px; /* Space between icon and text */
+}
+
+
+/* Collapsed State Styles */
+.navigation-panel.collapsed #logout-button {
+    width: calc(100% - 2px); /* Adjust for smaller panel */
+    justify-content: center; /* Center align content */
+    padding: 10px; /* Equal padding */
+    text-align: center; /* Center align icon */
+    text-decoration: none;
+    font-size: 0; /* Hide text */
+    display: flex;
+    
+}
+
+
+
+.navigation-panel.collapsed #logout-button i {
+    font-size: 26px; /* Keep the icon visible */
+    margin-right: 0; /* Remove margin in collapsed state */
+    width: 20px;
+}
+
+.navigation-panel.collapsed #logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+

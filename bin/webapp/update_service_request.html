@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Service Request</title>
+    <style>
+        /* Style for form layout */
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-container h2 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Update Service Request</h2>
+    <form id="update-service-request-form">
+        <div class="form-group">
+            <label for="service-name">Service Name</label>
+            <input type="text" id="service-name" required>
+        </div>
+        <div class="form-group">
+            <label for="service-description">Description</label>
+            <input type="text" id="service-description" required>
+        </div>
+        <div class="form-group">
+            <label for="service-cost">Cost</label>
+            <input type="number" id="service-cost" required>
+        </div>
+        <div class="form-group">
+            <label for="service-status">Status</label>
+            <select id="service-status" required>
+                <option value="pending">Pending</option>
+                <option value="in progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="service-category">Category</label>
+            <select id="service-category" required>
+                <option value="repair">Repair</option>
+                <option value="maintenance">Maintenance</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="request-date">Request Date</label>
+            <input type="date" id="request-date">
+        </div>
+        <div class="form-group">
+            <label for="scheduled-date">Scheduled Date</label>
+            <input type="date" id="scheduled-date">
+        </div>
+        <div class="form-group">
+            <label for="completion-date">Completion Date</label>
+            <input type="date" id="completion-date">
+        </div>
+        <div class="form-group">
+            <label for="property-id">Property</label>
+            <select id="property-id">
+                <option value="">Select Property</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="inventory-item-id">Inventory Item</label>
+            <select id="inventory-item-id">
+                <option value="">Select Item</option>
+            </select>
+        </div>
+        <button type="submit">Update Service Request</button>
+    </form>
+</div>
+
+<script>
+	// Function to validate the token
+	async function validateToken() {
+	  const token = localStorage.getItem("authToken"); // Get token from localStorage or cookies
+
+	  if (!token) {
+	    alert("No token found. Redirecting to login...");
+	    window.location.href = "index.html"; // Redirect to login if no token
+	    return;
+	  }
+
+	  try {
+	    // Call the API
+	    const response = await fetch('http://localhost:8080/api/users/validate-token', {
+	      method: "GET",
+	      headers: {
+	        "Authorization": token, // Send the token in the Authorization header
+	      },
+	    });
+
+	    if (response.status === 200) {
+	      console.log("Token is valid. Proceeding...");
+	      // Proceed with loading the page
+	    } else {
+	      const errorMessage = await response.text();
+	      alert(`Error: ${errorMessage}`);
+	      window.location.href = "index.html"; // Redirect to login if token is invalid
+	    }
+	  } catch (error) {
+	    console.error("An error occurred:", error);
+	    alert("Unable to validate token. Please try again later.");
+	    window.location.href = "index.html"; // Redirect on API call failure
+	  }
+	}
+
+	// Call the function on page load
+	document.addEventListener("DOMContentLoaded", validateToken);
+
+    // Extract the service request ID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const serviceRequestId = urlParams.get('id');
+    console.log("Service Request ID:", serviceRequestId); // Debugging the ID extraction
+
+    async function initializeForm() {
+        try {
+            // Load properties
+            console.log('Loading properties...');
+            const propertiesResponse = await fetch('http://localhost:8080/api/properties');
+            if (!propertiesResponse.ok) {
+                throw new Error('Failed to load properties');
+            }
+            const properties = await propertiesResponse.json();
+            console.log('Properties loaded:', properties);
+
+            const propertySelect = document.getElementById('property-id');
+            propertySelect.innerHTML = '<option value="">Select Property</option>';
+            properties.forEach(property => {
+                const option = document.createElement('option');
+                option.value = property.id;
+                option.textContent = property.property_Name;
+                propertySelect.appendChild(option);
+            });
+
+            // Load items
+            console.log('Loading items...');
+            const itemsResponse = await fetch('http://localhost:8080/api/items');
+            if (!itemsResponse.ok) {
+                throw new Error('Failed to load items');
+            }
+            const items = await itemsResponse.json();
+            console.log('Items loaded:', items);
+
+            const itemSelect = document.getElementById('inventory-item-id');
+            itemSelect.innerHTML = '<option value="">Select Item</option>';
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                itemSelect.appendChild(option);
+            });
+
+            // Load service request data
+            const serviceResponse = await fetch(`http://localhost:8080/api/services/${serviceRequestId}`);
+            if (!serviceResponse.ok) {
+                throw new Error('Failed to load service request');
+            }
+            const data = await serviceResponse.json();
+            console.log('Service request loaded:', data);
+
+            // Fill form fields
+            document.getElementById('service-name').value = data.name;
+            document.getElementById('service-description').value = data.service_description;
+            document.getElementById('service-cost').value = data.cost;
+            document.getElementById('service-status').value = data.status;
+            document.getElementById('service-category').value = data.service_category;
+            document.getElementById('request-date').value = data.requestDate;
+            document.getElementById('scheduled-date').value = data.scheduledDate;
+            document.getElementById('completion-date').value = data.completionDate;
+            document.getElementById('property-id').value = data.property ? data.property.id : '';
+            document.getElementById('inventory-item-id').value = data.inventoryItem ? data.inventoryItem.id : '';
+
+        } catch (error) {
+            console.error('Error initializing form:', error);
+            alert('Error loading form data: ' + error.message);
+        }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializeForm);
+
+    // Handle form submission
+    document.getElementById('update-service-request-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const updatedService = {
+            name: document.getElementById('service-name').value,
+            service_description: document.getElementById('service-description').value,
+            cost: parseFloat(document.getElementById('service-cost').value),
+            status: document.getElementById('service-status').value,
+            service_category: document.getElementById('service-category').value,
+            requestDate: document.getElementById('request-date').value,
+            scheduledDate: document.getElementById('scheduled-date').value,
+            completionDate: document.getElementById('completion-date').value,
+            property: { id: document.getElementById('property-id').value },
+            inventoryItem: { id: document.getElementById('inventory-item-id').value }
+        };
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/services/update/${serviceRequestId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedService)
+            });
+
+            if (response.ok) {
+                alert('Service request updated successfully!');
+                window.location.href = 'view_data.html';
+            } else {
+                throw new Error('Failed to update service request');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to update service request: ' + error.message);
+        }
+    });
+</script>
+
+</body>
+</html>
